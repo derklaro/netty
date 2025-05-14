@@ -380,8 +380,9 @@ class MemSegBuffer extends AdaptableBuffer<MemSegBuffer>
         if (length == 0) {
             return 0;
         }
-        checkGet(readerOffset(), length);
-        int bytesWritten = channel.write(readableBuffer().limit(length));
+        final int roff = readerOffset();
+        checkGet(roff, length);
+        int bytesWritten = channel.write(readableBuffer().limit(roff + length));
         skipReadableBytes(bytesWritten);
         return bytesWritten;
     }
@@ -395,8 +396,9 @@ class MemSegBuffer extends AdaptableBuffer<MemSegBuffer>
         if (length == 0) {
             return 0;
         }
-        checkGet(readerOffset(), length);
-        int bytesWritten = channel.write(readableBuffer().limit(length), position);
+        final int roff = readerOffset();
+        checkGet(roff, length);
+        int bytesWritten = channel.write(readableBuffer().limit(roff + length), position);
         skipReadableBytes(bytesWritten);
         return bytesWritten;
     }
@@ -415,8 +417,9 @@ class MemSegBuffer extends AdaptableBuffer<MemSegBuffer>
         if (length == 0) {
             return 0;
         }
-        checkSet(writerOffset(), length);
-        int bytesRead = channel.read(writableBuffer().limit(length), position);
+        final int woff = writerOffset();
+        checkSet(woff, length);
+        int bytesRead = channel.read(writableBuffer().limit(woff + length), position);
         if (bytesRead > 0) { // Don't skipWritable if bytesRead is 0 or -1
             skipWritableBytes(bytesRead);
         }
@@ -435,8 +438,9 @@ class MemSegBuffer extends AdaptableBuffer<MemSegBuffer>
         if (length == 0) {
             return 0;
         }
-        checkSet(writerOffset(), length);
-        int bytesRead = channel.read(writableBuffer().limit(length));
+        final int woff = writerOffset();
+        checkSet(woff, length);
+        int bytesRead = channel.read(writableBuffer().limit(woff + length));
         if (bytesRead != -1) {
             skipWritableBytes(bytesRead);
         }
