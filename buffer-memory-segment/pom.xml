@@ -66,6 +66,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire.version}</version>
+        <configuration>
+          <argLine>-Dio.netty5.buffer.MemoryManager=MemorySegment</argLine>
+        </configuration>
       </plugin>
     </plugins>
   </build>
