@@ -201,7 +201,6 @@ class MemSegBuffer extends AdaptableBuffer<MemSegBuffer>
 
     @Override
     public int readableArrayLength() {
-        assertHasArray(seg);
         return woff - roff;
     }
 
@@ -237,7 +236,6 @@ class MemSegBuffer extends AdaptableBuffer<MemSegBuffer>
 
     @Override
     public int writableArrayLength() {
-        assertHasArray(wseg);
         return writableBytes();
     }
 
