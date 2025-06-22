@@ -26,9 +26,7 @@ import javax.net.ssl.SSLEngine;
  */
 @Deprecated
 public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicationProtocolNegotiator {
-    private static final boolean AVAILABLE = true; //
-
-    private static final SslEngineWrapperFactory ALPN_WRAPPER = AVAILABLE ? new AlpnWrapper() : new FailureWrapper();
+    private static final SslEngineWrapperFactory ALPN_WRAPPER = new AlpnWrapper();
 
     /**
      * Create a new instance.
@@ -112,15 +110,6 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
         super(ALPN_WRAPPER, selectorFactory, listenerFactory, protocols);
     }
 
-    private static final class FailureWrapper extends AllocatorAwareSslEngineWrapperFactory {
-        @Override
-        public SSLEngine wrapSslEngine(SSLEngine engine, BufferAllocator alloc,
-                                       JdkApplicationProtocolNegotiator applicationNegotiator, boolean isServer) {
-            throw new RuntimeException("ALPN unsupported. Does your JDK version support it?"
-                    + " For Conscrypt, add the appropriate Conscrypt JAR to classpath and set the security provider.");
-        }
-    }
-
     private static final class AlpnWrapper extends AllocatorAwareSslEngineWrapperFactory {
         @Override
         public SSLEngine wrapSslEngine(SSLEngine engine, BufferAllocator alloc,
@@ -134,9 +123,5 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
             }
             return new JdkAlpnSslEngine(engine, applicationNegotiator, isServer);
         }
-    }
-
-    static boolean isAlpnSupported() {
-        return AVAILABLE;
     }
 }
