@@ -76,7 +76,9 @@ jobs:
         run: mkdir -p ~/local-staging
 
       - name: Update project version
-        run: ./mvnw -B --file pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
+        run: |
+          ./mvnw -B --file pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
+          ./mvnw -B --file bom/pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
 
       - name: Build docker image
         run: docker compose ${{ matrix.docker-compose-build }}
@@ -153,7 +155,9 @@ jobs:
             }]
 
       - name: Update project version
-        run: ./mvnw -B --file pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
+        run: |
+          ./mvnw -B --file pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
+          ./mvnw -B --file bom/pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
 
       - name: Deploy local staged artifacts
         run: ./mvnw -B --file pom.xml org.sonatype.plugins:nexus-staging-maven-plugin:deploy-staged -DaltStagingDirectory=$LOCAL_STAGING_DIR
