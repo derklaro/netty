@@ -160,4 +160,4 @@ jobs:
           ./mvnw -B --file bom/pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
 
       - name: Deploy local staged artifacts
-        run: ./mvnw -B --file pom.xml org.sonatype.plugins:nexus-staging-maven-plugin:deploy-staged -DaltStagingDirectory=$LOCAL_STAGING_DIR -DserverId=sonatype-nexus-staging
+        run: ./mvnw -B --file pom.xml org.sonatype.plugins:nexus-staging-maven-plugin:deploy-staged -DaltStagingDirectory=$LOCAL_STAGING_DIR -DserverId=sonatype-nexus-staging -DnexusUrl=https://repository.derklaro.dev/releases
