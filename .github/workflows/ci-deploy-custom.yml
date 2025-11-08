@@ -158,6 +158,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y xmlstarlet
           for POM in pom.xml bom/pom.xml; do
+            echo "Modifying pom: $POM..."
             xmlstarlet ed -P -L \
               -d "/_:project/_:parent" \
               -a "/_:project/_:developers" -t elem -n "distributionManagement" -v "" \
@@ -165,6 +166,7 @@ jobs:
               -s "/_:project/distributionManagement/repository" -t elem -n "id" -v "sonatype-nexus-staging" \
               -s "/_:project/distributionManagement/repository" -t elem -n "url" -v "https://repository.derklaro.dev/releases" \
               "$POM"
+            cat "$POM"
           done
 
       - name: Update project version
