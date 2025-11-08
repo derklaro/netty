@@ -75,6 +75,21 @@ jobs:
       - name: Create local staging directory
         run: mkdir -p ~/local-staging
 
+      - name: 'Edit pom.xml: remove parent, add distributionManagement'
+        run: |
+          sudo apt-get update && sudo apt-get install -y xmlstarlet
+          for POM in pom.xml bom/pom.xml; do
+            echo "Modifying pom: $POM..."
+            xmlstarlet ed -P -L \
+              -d "/_:project/_:parent" \
+              -a "/_:project/_:developers" -t elem -n "distributionManagement" -v "" \
+              -s "/_:project/distributionManagement" -t elem -n "repository" -v "" \
+              -s "/_:project/distributionManagement/repository" -t elem -n "id" -v "sonatype-nexus-staging" \
+              -s "/_:project/distributionManagement/repository" -t elem -n "url" -v "https://repository.derklaro.dev/releases" \
+              "$POM"
+            cat "$POM"
+          done
+
       - name: Update project version
         run: |
           ./mvnw -B --file pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
@@ -153,26 +168,6 @@ jobs:
               "username": "${{ secrets.SONATYPE_USERNAME }}",
               "password": "${{ secrets.SONATYPE_PASSWORD }}"
             }]
-
-      - name: 'Edit pom.xml: remove parent, add distributionManagement'
-        run: |
-          sudo apt-get update && sudo apt-get install -y xmlstarlet
-          for POM in pom.xml bom/pom.xml; do
-            echo "Modifying pom: $POM..."
-            xmlstarlet ed -P -L \
-              -d "/_:project/_:parent" \
-              -a "/_:project/_:developers" -t elem -n "distributionManagement" -v "" \
-              -s "/_:project/distributionManagement" -t elem -n "repository" -v "" \
-              -s "/_:project/distributionManagement/repository" -t elem -n "id" -v "sonatype-nexus-staging" \
-              -s "/_:project/distributionManagement/repository" -t elem -n "url" -v "https://repository.derklaro.dev/releases" \
-              "$POM"
-            cat "$POM"
-          done
-
-      - name: Update project version
-        run: |
-          ./mvnw -B --file pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
-          ./mvnw -B --file bom/pom.xml versions:set -DnewVersion=${{ needs.resolve-variables.outputs.version }} -DskipTests=true
 
       - name: Deploy local staged artifacts
         run: ./mvnw -B --file pom.xml org.sonatype.plugins:nexus-staging-maven-plugin:deploy-staged -DaltStagingDirectory=$LOCAL_STAGING_DIR
