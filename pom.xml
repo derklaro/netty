@@ -67,6 +67,17 @@
     </developer>
   </developers>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://repository.derklaro.dev/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://repository.derklaro.dev/releases</url>
+    </repository>
+  </distributionManagement>
+
   <profiles>
     <profile>
       <id>aggregate</id>
