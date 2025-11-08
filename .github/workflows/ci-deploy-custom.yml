@@ -158,15 +158,12 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y xmlstarlet
           for POM in pom.xml bom/pom.xml; do
-            # removes the parent block from the pom
-            xmlstarlet ed -P -L -d "/_:project/_:parent" "$POM"
-
-            # adds the distributionManagement repository to the pom
             xmlstarlet ed -P -L \
-              -s "/_:project" -t elem -n "distributionManagement" -v "" \
-              -s "/_:project/_:distributionManagement" -t elem -n "repository" -v "" \
-              -s "/_:project/_:distributionManagement/_:repository" -t elem -n "id" -v "sonatype-nexus-staging" \
-              -s "/_:project/_:distributionManagement/_:repository" -t elem -n "url" -v "https://repository.derklaro.dev/releases" \
+              -d "/_:project/_:parent" \
+              -a "/_:project/_:developers" -t elem -n "distributionManagement" -v "" \
+              -s "/_:project/distributionManagement" -t elem -n "repository" -v "" \
+              -s "/_:project/distributionManagement/repository" -t elem -n "id" -v "sonatype-nexus-staging" \
+              -s "/_:project/distributionManagement/repository" -t elem -n "url" -v "https://repository.derklaro.dev/releases" \
               "$POM"
           done
 
