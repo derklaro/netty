@@ -77,7 +77,7 @@ jobs:
 
       - name: 'Edit pom.xml: remove parent, add distributionManagement'
         run: |
-          sudo apt-get update && sudo apt-get install -y xmlstarlet
+          sudo apt-get update -q && sudo apt-get install -y -q xmlstarlet
           for POM in pom.xml bom/pom.xml; do
             echo "Modifying pom: $POM..."
             xmlstarlet ed -P -L \
@@ -87,7 +87,6 @@ jobs:
               -s "/_:project/distributionManagement/repository" -t elem -n "id" -v "sonatype-nexus-staging" \
               -s "/_:project/distributionManagement/repository" -t elem -n "url" -v "https://repository.derklaro.dev/releases" \
               "$POM"
-            cat "$POM"
           done
 
       - name: Update project version
